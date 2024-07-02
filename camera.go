@@ -321,6 +321,30 @@ func (c *Camera) SetGainAuto() {
 	// TODO
 }
 
+func (c *Camera) SetString(key string, value string) error {
+	ckey := C.CString(key)
+	cvalue := C.CString(value)
+	var gerror *C.struct__GError
+	C.arv_camera_set_string(
+		c.camera,
+		ckey,
+		cvalue,
+		&gerror,
+	)
+	C.free(unsafe.Pointer(ckey))
+	C.free(unsafe.Pointer(cvalue))
+
+	return nil
+}
+
+func (c *Camera) GetString(key string) (string, error) {
+	ckey := C.CString(key)
+	var gerror *C.struct__GError
+	cvalue, err := C.arv_camera_get_string(c.camera, ckey, &gerror)
+	C.free(unsafe.Pointer(ckey))
+	return C.GoString(cvalue), err
+}
+
 func (c *Camera) GetPayloadSize() (uint, error) {
 	var gerror *C.struct__GError
 	csize, err := C.arv_camera_get_payload(c.camera, &gerror)

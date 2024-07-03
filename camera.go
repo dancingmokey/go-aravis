@@ -325,16 +325,18 @@ func (c *Camera) SetString(key string, value string) error {
 	ckey := C.CString(key)
 	cvalue := C.CString(value)
 	var gerror *C.struct__GError
-	C.arv_camera_set_string(
+
+	_, err := C.arv_camera_set_string(
 		c.camera,
 		ckey,
 		cvalue,
 		&gerror,
 	)
+
 	C.free(unsafe.Pointer(ckey))
 	C.free(unsafe.Pointer(cvalue))
 
-	return nil
+	return err
 }
 
 func (c *Camera) GetString(key string) (string, error) {
